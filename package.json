@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
+    "@hookform/resolvers": "^3.10.0",
     "@prisma/client": "^6.16.2",
     "date-fns": "^4.1.0",
     "jose": "^6.1.0",
@@ -23,7 +23,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.63.0",
-    "zod": "^4.1.11",
+    "swr": "^2.3.6",
+    "zod": "^3.25.76",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
