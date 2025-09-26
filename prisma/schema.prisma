@@ -1,0 +1,106 @@
+// generator client {
+//   provider = "prisma-client-js"
+//   output   = "../src/generated/prisma"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String  @id @default(cuid())
+  email     String  @unique
+  name      String?
+  createdAt DateTime @default(now())
+  preferences Preference?
+  recommendations Recommendation[]
+  feedbacks Feedback[]
+  weatherSnapshots  WeatherSnapshot[]
+}
+
+model Preference {
+  userId       String @id
+  roast        String?
+  tempPref     String?        
+  dairy        String?        
+  sweetness    Int?           
+  caffeine     String?      
+  flavorNotes  Json       
+  user         User @relation(fields: [userId], references: [id])
+}
+
+model Coffee {
+  id          String  @id
+  name        String
+  tags        Json 
+  tempAllowed Json   
+  imageUrl    String?
+  provider    String      
+  externalId  String
+  createdAt   DateTime @default(now())
+  recItems    RecommendationItem[]
+  feedbacks Feedback[] 
+}
+
+model WeatherSnapshot {
+  id         String   @id @default(cuid())
+  userId     String?
+  lat        Float
+  lon        Float
+  tz         String?
+  tempC      Float
+  feelsLikeC Float?
+  humidity   Int?
+  isRaining  Boolean?
+  raw        Json
+  capturedAt DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id])
+  recs       Recommendation[]
+}
+
+model Recommendation {
+  id           String   @id @default(cuid())
+  userId       String
+  weatherId    String
+  explanation  String
+  modelVersion String
+  rawModel     Json
+  createdAt    DateTime @default(now())
+  user         User @relation(fields: [userId], references: [id])
+  weather      WeatherSnapshot @relation(fields: [weatherId], references: [id])
+  items        RecommendationItem[]
+  feedbacks    Feedback[]
+}
+
+model RecommendationItem {
+  id               String @id @default(cuid())
+  recommendationId String
+  coffeeId         String
+  score            Float
+  recommendation   Recommendation @relation(fields: [recommendationId], references: [id])
+  coffee           Coffee @relation(fields: [coffeeId], references: [id])
+}
+
+model Feedback {
+  id               String @id @default(cuid())
+  userId           String
+  recommendationId String
+  coffeeId         String
+  rating           Int     
+  comment          String?
+  createdAt        DateTime @default(now())
+  user             User @relation(fields: [userId], references: [id])
+  recommendation   Recommendation @relation(fields: [recommendationId], references: [id])
+  coffee           Coffee @relation(fields: [coffeeId], references: [id])
+}
